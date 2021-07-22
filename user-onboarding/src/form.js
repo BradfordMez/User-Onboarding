@@ -15,7 +15,7 @@ export default function UserForm({addToTeam}) {
 
     const [user, setUser] = useState()
 
-    const [submitButton, setSubmitButton] = useState(true)
+    // const [submitButton, setSubmitButton] = useState(false)
 
     const [errors, setErrors] = useState({
         name: '',
@@ -43,11 +43,11 @@ export default function UserForm({addToTeam}) {
         .catch(err=>{setErrors({...errors, [evt.target.name]:err.errors[0] })})
     }
 
-    useEffect(()=>{
-        formSchema.isValid(formData).then(valid=>{
-            setSubmitButton(!valid)
-        })
-    }, [formData])
+    // useEffect(()=>{
+    //     formSchema.isValid(formData).then(valid=>{
+    //         setSubmitButton(!valid)
+    //     })
+    // }, [formData])
 
     const onChange=evt=>{
         console.log('changed!', evt.target.value)
@@ -93,7 +93,8 @@ export default function UserForm({addToTeam}) {
                             <input type='checkbox' name='terms' checked={formData.terms} onChange={onChange}/>
                             {errors.terms.length > 0 ? <p className='error'>{errors.terms}</p>:null}
                         </label>
-                        <button disabled={submitButton} type='submit'>Submit</button>
+                        <pre>{JSON.stringify(user, null, 2)}</pre>
+                        <button type='submit'>Submit</button>
                         
                 </>
             </form>
