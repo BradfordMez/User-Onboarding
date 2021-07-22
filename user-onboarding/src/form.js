@@ -10,10 +10,8 @@ export default function UserForm({addToTeam}) {
         name: '',
         email: '',
         password: '',
-        terms: '',
+        terms: false,
     })
-
-    const [user, setUser] = useState()
 
     // const [submitButton, setSubmitButton] = useState(false)
 
@@ -30,9 +28,7 @@ export default function UserForm({addToTeam}) {
             .required("Name must be filled out"),
         email: yup.string().email("Must be a valid email"),
         password: yup.string().required("Password must be 8 characters or more").min(8),
-        terms: yup
-            .boolean()
-            .oneOf([], "Accept the terms")
+        terms: yup.boolean().oneOf([false], "Accept the terms")
 
     })
 
@@ -46,7 +42,9 @@ export default function UserForm({addToTeam}) {
 
     const onChange=evt=>{
         evt.persist()
-        const newFormData = {...formData, [evt.target.name]: evt.target.type==='checkbox'? evt.target.checked: evt.target.value 
+        let newFormData = {...formData, [evt.target.name]: evt.target.value }
+        if(evt.target.name === 'terms'){
+            newFormData={...formData, terms: !formData.terms}
         }
         validateChange(evt)
         setFormData(newFormData)
@@ -62,7 +60,7 @@ export default function UserForm({addToTeam}) {
                     name: '',
                     email: '',
                     password: '',
-                    terms: '',
+                    terms: false,
                 })
             }).catch(err=>console.log(err))
       }
@@ -83,10 +81,13 @@ export default function UserForm({addToTeam}) {
                             <input type='password' name='password' value={formData.password} onChange={onChange} />
                             {errors.password.length > 0 ? <p className='error'>{errors.password}</p>:null}
                         </label>
+
                         <label className='terms'>Terms of Service
-                            <input type='checkbox' name='terms' checked={formData.terms} onChange={onChange}/>
+
+                            <input type='checkbox' value={formData.terms} name='terms' checked={formData.terms} onChange={onChange}/>
                             {errors.terms.length > 0 ? <p className='error'>{errors.terms}</p>:null}
                         </label>
+
                         <button type='submit' name='button' >Submit</button>
                         
                 </>
