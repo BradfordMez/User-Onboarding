@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import Form from './form';
+import UserForm from './form';
 import React,{useState} from 'react';
 
 function App() {
@@ -12,7 +11,8 @@ function App() {
   return (
 
     <div className="App">
-      <Form addToTeam={addToTeam}/>
+      <UserForm addToTeam={addToTeam}/>
+    
     </div>
   );
 }
