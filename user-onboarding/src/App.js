@@ -12,7 +12,7 @@ function App() {
 
     <div className="App">
       <UserForm addToTeam={addToTeam}/>
-    
+      {}
     </div>
   );
 }

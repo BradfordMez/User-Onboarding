@@ -1,6 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import FadeIn from 'react-fade-in';
 import * as yup from 'yup'
+import axios from 'axios'
+import IndividualUser from './IndividualUser';
+
 
 export default function UserForm({addToTeam}) {
     const [formData, setFormData] = useState({
@@ -9,6 +12,8 @@ export default function UserForm({addToTeam}) {
         password: '',
         terms: '',
     })
+
+    const [user, setUser] = useState()
 
     const [submitButton, setSubmitButton] = useState(true)
 
@@ -27,7 +32,7 @@ export default function UserForm({addToTeam}) {
         password: yup.string().required("Password must be 8 characters or more").min(8),
         terms: yup
             .boolean()
-            .oneOf([true], "Accept the terms")
+            .oneOf([], "Accept the terms")
 
     })
 
@@ -44,13 +49,6 @@ export default function UserForm({addToTeam}) {
         })
     }, [formData])
 
-
-    // const handleInput = (event=>{
-    //     const target = event.target;
-    //     const value= target.type === 'checkbox' ? target.checked : target.value;
-    //     const name = target.name;
-    //     setFormData({...formData, [name]:value });
-    // })
     const onChange=evt=>{
         console.log('changed!', evt.target.value)
         evt.persist()
@@ -63,10 +61,16 @@ export default function UserForm({addToTeam}) {
 
     const onSubmit = evt => {
         evt.preventDefault()
-        const {name, email, password} = formData
-        let newUser = {name, email, password}
-        addToTeam(newUser)
-        // onSubmit()
+        axios.post('https://reqres.in/api/users', formData)
+            .then(res=>{
+                setUser(res.data)
+                setFormData({
+                    name: '',
+                    email: '',
+                    password: '',
+                    terms: '',
+                })
+            }).catch(err=>console.log(err))
       }
     
     return (
@@ -75,17 +79,22 @@ export default function UserForm({addToTeam}) {
                 <>
                         <label>Name:
                             <input type='text' name='name' value={formData.name} onChange={onChange} />
+                            {errors.name.length>0 ? <p className='error'>{errors.name}</p>: null}
                         </label>
                         <label>Email:
                             <input type='email' name='email' value={formData.email} onChange={onChange} />
+                            {errors.email.length > 0 ? <p className='error'>{errors.email}</p>:null}
                         </label>
                         <label>Password:
                             <input type='password' name='password' value={formData.password} onChange={onChange} />
+                            {errors.password.length > 0 ? <p className='error'>{errors.password}</p>:null}
                         </label>
-                        <label>Terms of Service
-                            <input type='checkbox' name='terms' checked={formData.terms}/>
+                        <label className='terms'>Terms of Service
+                            <input type='checkbox' name='terms' checked={formData.terms} onChange={onChange}/>
+                            {errors.terms.length > 0 ? <p className='error'>{errors.terms}</p>:null}
                         </label>
                         <button disabled={submitButton} type='submit'>Submit</button>
+                        
                 </>
             </form>
         </FadeIn>
