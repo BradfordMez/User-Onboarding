@@ -43,14 +43,8 @@ export default function UserForm({addToTeam}) {
         .catch(err=>{setErrors({...errors, [evt.target.name]:err.errors[0] })})
     }
 
-    // useEffect(()=>{
-    //     formSchema.isValid(formData).then(valid=>{
-    //         setSubmitButton(!valid)
-    //     })
-    // }, [formData])
 
     const onChange=evt=>{
-        console.log('changed!', evt.target.value)
         evt.persist()
         const newFormData = {...formData, [evt.target.name]: evt.target.type==='checkbox'? evt.target.checked: evt.target.value 
         }
@@ -63,7 +57,7 @@ export default function UserForm({addToTeam}) {
         evt.preventDefault()
         axios.post('https://reqres.in/api/users', formData)
             .then(res=>{
-                setUser(res.data)
+                addToTeam(res.data)
                 setFormData({
                     name: '',
                     email: '',
@@ -93,8 +87,7 @@ export default function UserForm({addToTeam}) {
                             <input type='checkbox' name='terms' checked={formData.terms} onChange={onChange}/>
                             {errors.terms.length > 0 ? <p className='error'>{errors.terms}</p>:null}
                         </label>
-                        <pre>{JSON.stringify(user, null, 2)}</pre>
-                        <button type='submit'>Submit</button>
+                        <button type='submit' name='button' >Submit</button>
                         
                 </>
             </form>
